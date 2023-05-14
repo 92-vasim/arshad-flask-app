@@ -4,8 +4,8 @@ from datetime import datetime
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todo.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-app.app_context().push()
+db = SQLAlchemy()
+db.init_app(app)
 
 
 class Todo(db.Model):
@@ -17,6 +17,8 @@ class Todo(db.Model):
     def __repr__(self) -> str:
       return f"{self.sno} - {self.title}"
 
+with app.app_context():
+    db.create_all()
 
 
 @app.route('/', methods = ["GET" , "POST"])
